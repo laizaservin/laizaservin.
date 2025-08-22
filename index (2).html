@@ -1,10 +1,55 @@
-<html>
-  <head>
-    <title>Leanderson | Minha Página</title>
-  </head>
-  <body>
-    <h1>Leanderson | Minha Página</h1>
-    <h6>é simplesmente uma simulação de texto da indústria tipográfica e de impressos, e vem sendo utilizado desde o século XVI, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de modelos de tipos. Lorem Ipsum sobreviveu não só a cinco séculos, como também ao salto para a editoração eletrônica, permanecendo essencialmente inalterado. Se popularizou na década de 60, quando a Letraset lançou decalques contendo passagens de Lorem Ipsum, e mais recentemente quando passou a ser integrado a softwares de editoração eletrônica como Aldus PageMaker.</h6>
-    <p>Minha primeira página com HTML</p>
-  </body>
-</html>
+def cadastrar_candidatos():
+    candidatos = {}
+    qtd = int(input("Quantos candidatos deseja cadastrar? "))
+    
+    for i in range(qtd):
+        nome = input(f"Nome do candidato {i+1}: ")
+        numero = int(input(f"Número do candidato {i+1}: "))
+        while numero in candidatos:  # garante que não terá número repetido
+            print("⚠ Número já usado! Digite outro.")
+            numero = int(input(f"Número do candidato {i+1}: "))
+        candidatos[numero] = {"nome": nome, "votos": 0}
+    return candidatos
+
+
+def realizar_votacao(candidatos):
+    qtd_eleitores = int(input("\nQuantos eleitores irão votar? "))
+    
+    for i in range(qtd_eleitores):
+        print(f"\n--- Eleitor {i+1} ---")
+        print("Lista de candidatos:")
+        for numero, dados in candidatos.items():
+            print(f"{numero} - {dados['nome']}")
+        
+        voto = int(input("Digite o número do candidato escolhido: "))
+        while voto not in candidatos:
+            print("⚠ Voto inválido! Digite um número válido da lista.")
+            voto = int(input("Digite o número do candidato escolhido: "))
+        candidatos[voto]["votos"] += 1
+    
+    return qtd_eleitores
+
+
+def mostrar_resultados(candidatos, total_votos):
+    print("\n===== RESULTADOS =====")
+    # Ordenar por quantidade de votos (maior para menor)
+    ranking = sorted(candidatos.items(), key=lambda item: item[1]["votos"], reverse=True)
+    
+    for numero, dados in ranking:
+        porcentagem = (dados["votos"] / total_votos) * 100
+        print(f"{dados['nome']} ({numero}) - {dados['votos']} votos ({porcentagem:.2f}%)")
+    
+    # Identificar vencedor
+    vencedor = ranking[0]
+    print(f"\n🏆 VENCEDOR: {vencedor[1]['nome']} ({vencedor[0]}) com {vencedor[1]['votos']} votos!")
+
+
+def main():
+    print("=== Sistema de Votação para Síndico ===")
+    candidatos = cadastrar_candidatos()
+    total_votos = realizar_votacao(candidatos)
+    mostrar_resultados(candidatos, total_votos)
+
+
+if __name__ == "__main__":
+    main()
